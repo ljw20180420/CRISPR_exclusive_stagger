@@ -49,8 +49,9 @@ def visualize_umap(
         x=umap_x,
         y=umap_y,
         hue=annots.astype("category"),
-        size=0.1,
-        alpha=0.5,
+        s=1,
+        alpha=0.2,
+        edgecolor=None,
     )
     ax.get_figure().savefig(filename)
     plt.close("all")
