@@ -10,6 +10,7 @@ from sklearn.preprocessing import StandardScaler
 
 
 def clean_data(filename: os.PathLike) -> pd.DataFrame:
+    # Rename 5bp to 0bp.
     df = (
         pd.read_csv(filename)
         .rename(columns={"5bp": "0bp"})
@@ -19,9 +20,19 @@ def clean_data(filename: os.PathLike) -> pd.DataFrame:
             )
         )
     )
+
+    # Reorder 0bp to the previous postion of 1bp.
     columns = df.columns.to_list()
     columns.remove("0bp")
     columns.insert(columns.index("1bp"), "0bp")
+
+    # Convert columns group (cas protein) and dominant_bp from object to category.
+    df["group"] = df["group"].astype(
+        pd.CategoricalDtype(["spycas9", "spymac", "ispymac"], ordered=True)
+    )
+    df["dominant_bp"] = df["dominant_bp"].astype(
+        pd.CategoricalDtype(["0bp", "1bp", "2bp", "3bp", "4bp"], ordered=True)
+    )
 
     return df.reindex(columns=columns)
 
@@ -45,10 +56,12 @@ def umap_embed(df: pd.DataFrame) -> tuple[np.ndarray]:
 def visualize_umap(
     umap_x: np.ndarray, umap_y: np.ndarray, annots: pd.Series, filename: os.PathLike
 ) -> None:
+    if not isinstance(annots.dtype, pd.CategoricalDtype):
+        annots = annots.astype("category")
     ax = sns.scatterplot(
         x=umap_x,
         y=umap_y,
-        hue=annots.astype("category"),
+        hue=annots,
         s=1,
         alpha=0.2,
         edgecolor=None,

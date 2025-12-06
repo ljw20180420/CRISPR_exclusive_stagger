@@ -20,9 +20,17 @@ def main() -> None:
     # umap
     df["umap_x"], df["umap_y"] = umap_embed(df)
     df.to_csv("result/output.csv", index=False)
-    visualize_umap(df["umap_x"], df["umap_y"], df["group"], "result/umap_group.pdf")
     visualize_umap(
-        df["umap_x"], df["umap_y"], df["dominant_bp"], "result/umap_dominant_bp.pdf"
+        df["umap_x"],
+        df["umap_y"],
+        df["group"],
+        "result/umap_group.pdf",
+    )
+    visualize_umap(
+        df["umap_x"],
+        df["umap_y"],
+        df["dominant_bp"],
+        "result/umap_dominant_bp.pdf",
     )
 
 
