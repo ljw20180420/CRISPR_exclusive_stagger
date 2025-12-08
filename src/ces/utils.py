@@ -431,6 +431,8 @@ def draw_box_bar(
             mapping=aes(x="cas", y=target, fill="cas", color="cas"),
         )
         + geom_boxplot(outlier_alpha=0.0)
+        # + geom_violin()
+        # + geom_sina(alpha=0.01)
         + scale_x_discrete(limits=["spycas9", "spymac", "ispymac"])
         + scale_color_manual(
             values={
