@@ -513,6 +513,8 @@ def umap_embed(df: pd.DataFrame) -> tuple[np.ndarray]:
 def visualize_umap(
     umap_x: np.ndarray, umap_y: np.ndarray, annots: pd.Series, filename: os.PathLike
 ) -> None:
+    filename = pathlib.Path(os.fspath(filename))
+    os.makedirs(filename.parent, exist_ok=True)
     if not isinstance(annots.dtype, pd.CategoricalDtype):
         annots = annots.astype("category")
     ax = sns.scatterplot(
