@@ -447,7 +447,7 @@ def draw_box_bar(
             }
         )
         + coord_cartesian(ylim=(0, yup))
-    ).save(f"result/{target}_box.png")
+    ).save(f"result/{target}_box.pdf")
 
     df = (
         df.groupby("cas")[target]
@@ -488,7 +488,7 @@ def draw_box_bar(
                 "ispymac": "#0000FF",
             }
         )
-    ).save(f"result/{target}_bar.png")
+    ).save(f"result/{target}_bar.pdf")
 
 
 def multinomial_test(row: pd.Series) -> float:
