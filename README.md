@@ -7,5 +7,5 @@
   ```
 - To run `ces` module,
   ```shell
-  $ uv run python -m ces
+  $ ./main.py
   ```
