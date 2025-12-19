@@ -29,47 +29,51 @@ def main() -> None:
         mut_fre_x_thres={"spycas9": 0.08, "spymac": 0.02, "ispymac": 0.02},
     )
 
-    for target, yup in zip(
-        ["tem_1", "tem_2", "tem_3", "tem_4"], [0.7, 0.15, 0.15, 0.2]
-    ):
-        pt_df = pairwise_transform(
-            df,
-            target,
-        )
+    # for target, yup in zip(
+    #     ["tem_1", "tem_2", "tem_3", "tem_4"], [0.7, 0.15, 0.15, 0.2]
+    # ):
+    #     pt_df = pairwise_transform(
+    #         df,
+    #         target,
+    #     )
 
-        pairwise_test(
-            df=pt_df,
-            target=target,
-            methods=["t-test-ind", "Welch-test", "Yuen-test", "t-test-rel"],
-        )
+    #     pairwise_test(
+    #         df=pt_df,
+    #         target=target,
+    #         methods=["t-test-ind", "Welch-test", "Yuen-test", "t-test-rel"],
+    #     )
 
-        draw_box_bar(
-            df=pt_df,
-            target=target,
-            yup=yup,
-        )
+    #     draw_box_bar(
+    #         df=pt_df,
+    #         target=target,
+    #         yup=yup,
+    #     )
 
-    # multinomial test
-    df["mtest"] = df.apply(multinomial_test, axis=1)
+    # # multinomial test
+    # df["mtest"] = df.apply(multinomial_test, axis=1)
+
+    # # save
+    # os.makedirs("result", exist_ok=True)
+    # df.to_csv("result/output.csv", index=False)
 
     # umap
-    df["umap_x"], df["umap_y"] = umap_embed(df)
-
-    # save
-    os.makedirs("result", exist_ok=True)
-    df.to_csv("result/output.csv", index=False)
+    umap_x, umap_y, annot_cas, annot_dominant_bp = umap_embed(
+        df,
+        normalize=True,
+        dominant=0.5,
+    )
 
     # visualize umap
     visualize_umap(
-        df["umap_x"],
-        df["umap_y"],
-        df["cas"],
+        umap_x,
+        umap_y,
+        annot_cas,
         "result/umap_group.pdf",
     )
     visualize_umap(
-        df["umap_x"],
-        df["umap_y"],
-        df["dominant_bp"],
+        umap_x,
+        umap_y,
+        annot_dominant_bp,
         "result/umap_dominant_bp.pdf",
     )
 

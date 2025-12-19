@@ -31,6 +31,7 @@ from scipy.stats import (
     ttest_rel,
     wilcoxon,
 )
+from sklearn.manifold import TSNE
 from sklearn.preprocessing import StandardScaler
 
 
@@ -504,12 +505,27 @@ def multinomial_test(row: pd.Series) -> float:
     return p_value
 
 
-def umap_embed(df: pd.DataFrame) -> tuple[np.ndarray]:
-    reducer = umap.UMAP()
+def umap_embed(df: pd.DataFrame, normalize: bool, dominant: float) -> tuple[np.ndarray]:
+    reducer = umap.UMAP(unique=True)
+    annot_cas = df["cas"]
+    annot_dominant_bp = df["dominant_bp"]
     data = df[[f"tem_{bp}" for bp in range(5)]].to_numpy()
-    scaled_data = StandardScaler().fit_transform(data / data.sum(axis=1, keepdims=True))
+    data = data / data.sum(axis=1, keepdims=True)
+
+    d_mask = data.max(axis=1) >= dominant
+    data, annot_cas, annot_dominant_bp = (
+        data[d_mask],
+        annot_cas.loc[d_mask].reset_index(drop=True),
+        annot_dominant_bp.loc[d_mask].reset_index(drop=True),
+    )
+
+    if normalize:
+        scaled_data = StandardScaler().fit_transform(data)
+    else:
+        scaled_data = data
     embeddings = reducer.fit_transform(scaled_data)
-    return embeddings[:, 0], embeddings[:, 1]
+
+    return embeddings[:, 0], embeddings[:, 1], annot_cas, annot_dominant_bp
 
 
 def visualize_umap(
